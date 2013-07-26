@@ -20,7 +20,7 @@ Ejecución desde la terminal
 ```sh
 sh ejemploTimbradoXMLBash.sh
 sh ejemploTimbradoLayoutBash.sh
-sh ejemploCancelacionBash.php
+sh ejemploCancelacionBash.sh
 
 ```
 

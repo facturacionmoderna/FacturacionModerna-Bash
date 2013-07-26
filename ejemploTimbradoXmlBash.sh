@@ -22,6 +22,8 @@ PEMFILE="utilerias/certificados/20001000000200000192.key.pem"
 PASS="12345678a"
 TMP="tmp.txt"
 cfdixml="cfdi.xml"
+FILE_RESPONSE="response.xml"
+code=""
 ###
 
 ## Crear Layout
@@ -88,15 +90,15 @@ done
 numcert=$str
 
 ## Agrear Informacion del Sello al XML original
-nodo=`grep "\scertificado=\".*\"" $FILE_XML | sed -e "s/^.*\scertificado/certificado/" | cut -f1 -d" "`
+nodo=`grep " certificado=\".*\"" $FILE_XML | sed -e "s/^.* certificado/certificado/" | cut -f1 -d" "`
 sed -e "s/$nodo/certificado=\"$certificado\"/g" $FILE_XML > $TMP
 cmd=`mv $TMP $FILE_XML`
 
-nodo=`grep "\snoCertificado=\".*\"" $FILE_XML | sed -e "s/^.*\snoCertificado/noCertificado/" | cut -f1 -d" "`
+nodo=`grep " noCertificado=\".*\"" $FILE_XML | sed -e "s/^.* noCertificado/noCertificado/" | cut -f1 -d" "`
 sed -e "s/$nodo/noCertificado=\"$numcert\"/g" $FILE_XML > $TMP
 cmd=`mv $TMP $FILE_XML`
 
-nodo=`grep "\ssello=\".*\"" $FILE_XML | sed -e "s/^.*\ssello/sello/" | cut -f1 -d" "`
+nodo=`grep " sello=\".*\"" $FILE_XML | sed -e "s/^.* sello/sello/" | cut -f1 -d" "`
 sed -e "s/$nodo/sello=\"$sello\"/g" $FILE_XML > $TMP
 cmd=`mv $TMP $FILE_XML`
 
@@ -112,11 +114,9 @@ EOF
 
 echo $SOAP_REQUEST > $FILE_SOAPREQUEST
 echo "solicitando Timbrado..."
-echo "curl --data  @$FILE_SOAPREQUEST --header "Content-Type: text/xml; charset=utf-8" $URLTIMBRADO"
 soap_response=`curl --data  @$FILE_SOAPREQUEST --header "Content-Type: text/xml; charset=utf-8" $URLTIMBRADO`
 #echo $soap_response
 
-FILE_RESPONSE="response.xml"
 echo $soap_response > $FILE_RESPONSE
 
 ## Verificar que no haya ocurrido un error
@@ -130,7 +130,7 @@ if [ "$code" != "" ]
 fi
 
 ## Decodificar XML
-xmlb64=`grep "<xml\sxsi:type=\"xsd:string\">.*<.xml>" $FILE_RESPONSE | sed -e "s/^.*<xml/<xml/" | cut -f2 -d">"| cut -f1 -d"<"`
+xmlb64=`grep "<xml xsi:type=\"xsd:string\">.*<.xml>" $FILE_RESPONSE | sed -e "s/^.*<xml/<xml/" | cut -f2 -d">"| cut -f1 -d"<"`
 echo `echo $xmlb64 | base64 --decode > $cfdixml`
 echo "Timbrado generado con exito"
 echo "El comprobante lo encuentra en el archivo $cfdixml"

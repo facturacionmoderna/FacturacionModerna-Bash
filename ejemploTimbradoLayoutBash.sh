@@ -16,6 +16,8 @@ FILE_SOAPREQUEST="soap_request.xml"
 GENERARTXT="false"
 GENERARPDF="false"
 GENERARCBB="false"
+FILE_RESPONSE="response.xml"
+cfdixml="cfdi.xml"
 ###
 
 FILE=$(cat<<EOF
@@ -24,7 +26,7 @@ EOF
 )
 
 echo $FILE > $FILE_TMP
-B64STR=`base64 -w 0 -i $FILE_TMP`
+B64STR=`base64 -i $FILE_TMP`
 
 SOAP_REQUEST=$( cat <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -34,16 +36,12 @@ EOF
 
 echo $SOAP_REQUEST > $FILE_SOAPREQUEST
 echo "solicitando Timbrado..."
-echo "curl --data  @$FILE_SOAPREQUEST --header "Content-Type: text/xml; charset=utf-8" $URLTIMBRADO"
 soap_response=`curl --data  @$FILE_SOAPREQUEST --header "Content-Type: text/xml; charset=utf-8" $URLTIMBRADO`
 
-echo $soap_response
-FILE_RESPONSE="response.xml"
 echo $soap_response > $FILE_RESPONSE
 
-xmlb64=`grep "<xml\sxsi:type=\"xsd:string\">.*<.xml>" $FILE_RESPONSE | sed -e "s/^.*<xml/<xml/" | cut -f2 -d">"| cut -f1 -d"<"`
-cfdixml="cfdi.xml"
-echo `echo $xmlb64 | base64 --decode > $cfdixml` 
+xmlb64=`grep "<xml xsi:type=\"xsd:string\">.*<.xml>" $FILE_RESPONSE | sed -e "s/^.*<xml/<xml/" | cut -f2 -d">"| cut -f1 -d"<"`
+echo `echo $xmlb64 | base64 --decode > $cfdixml`
 
 echo "Timbrado generado con exito"
 echo "El comprobante lo encuentra en el archivo $cfdixml"
