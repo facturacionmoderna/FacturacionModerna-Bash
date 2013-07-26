@@ -1,11 +1,11 @@
 # Cliente de Timbrado y Cancelación de CFDI
 
-Clase Genérica para realizar el timbrado y cancelación de un CFDI con [Facturación Moderna][1], utilizando Bash. 
+Script para realizar el timbrado y cancelación de un CFDI con [Facturación Moderna][1], utilizando Bash. 
 
 
 ## Carácteristicas
 
-* Script generico para ser implementada en tu proyecto.
+* Script para ser implementado en tu proyecto.
 * Timbrado de XML CFDI versión 3.2
 * Timbrado de un archivo de texto plano
 * Ejemplo de generación del sello digital
