@@ -12,7 +12,7 @@ RFC="ESI920427886"
 URLTIMBRADO="https://t1demo.facturacionmoderna.com/timbrado/soap"
 FILE_SOAPREQUEST="soap_request.xml"
 GENERARTXT="false"
-GENERARPDF="false"
+GENERARPDF="true"
 GENERARCBB="false"
 FILE_XML="XmlUTF8.xml"
 XSLTFILE="utilerias/xslt32/cadenaoriginal_3_2.xslt"
@@ -22,41 +22,32 @@ PEMFILE="utilerias/certificados/20001000000200000192.key.pem"
 PASS="12345678a"
 TMP="tmp.txt"
 cfdixml="cfdi.xml"
+cfdipdf="cfdi.pdf"
 FILE_RESPONSE="response.xml"
 code=""
 ###
 
 ## Crear Layout
 FILE=$(cat<<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3
-                  http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd" version="3.2" fecha="2013-07-23T09:12:00" folio="101"
-                  serie="AX" subTotal="100.00" descuento="0.00" total="116.00" Moneda="MXN" TipoCambio="0.00"
-                  condicionesDePago="Pago en una sola Exhibición" tipoDeComprobante="ingreso" noCertificado="" certificado=""
-                  formaDePago="Contado" metodoDePago="Efectivo" NumCtaPago="0009 - Banamex" sello="" LugarExpedicion="San Pedro Garza García">
-  <cfdi:Emisor nombre="COMERCIALIZADORA SA DE CV" rfc="ESI920427886">
-    <cfdi:DomicilioFiscal calle="Calzada del Valle" noExterior="90" noInterior="int-10" colonia="Col. Del Valle"
-                          municipio="San Pedro Garza Garcia." estado="Nuevo León" pais="México" codigoPostal="76888"/>
-    <cfdi:ExpedidoEn calle="Calzada del Valle(Sucursal)" noExterior="90" noInterior="int-10" colonia="Col. Del Valle"
-                          municipio="San Pedro Garza Garcia." estado="Nuevo León" pais="México" codigoPostal="76888"/>
-    <cfdi:RegimenFiscal Regimen="PERSONA MORAL REGIMEN GENERAL DE LEY."/>
+<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd" xmlns:cfdi="http://www.sat.gob.mx/cfd/3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="3.2" serie="AA" folio="4" fecha="2013-07-12T10:12:58" sello="" formaDePago="Pago en una sola exhibición" noCertificado="" certificado="" condicionesDePago="Contado" subTotal="1498.00" descuento="0.00" Moneda="MXN" total="1737.68" tipoDeComprobante="ingreso" metodoDePago="Cheque" LugarExpedicion="San Pedro Garza García, Nuevo León, México" NumCtaPago="No identificado">
+  <cfdi:Emisor rfc="ESI920427886" nombre="FACTURACION MODERNA SA DE CV">
+    <cfdi:DomicilioFiscal calle="RIO GUADALQUIVIR" noExterior="238" colonia="ORIENTE DEL VALLE" municipio="San Pedro Garza García" estado="Nuevo León" pais="México" codigoPostal="66220"/>
+    <cfdi:RegimenFiscal Regimen="REGIMEN GENERAL DE LEY PERSONAS MORALES"/>
   </cfdi:Emisor>
-  <cfdi:Receptor nombre="FIRST DATA PROCUREMENTS MEXICO, S DE R.L. DE CV" rfc="FPD020724PKA">
-    <cfdi:Domicilio calle="Reforma" noExterior="1000" noInterior="Piso 2, Int-5" colonia="Centro" municipio="Alvaro Obregón"
-                    estado="Distrito Federal" pais="México" codigoPostal="60000"/>
+  <cfdi:Receptor rfc="XAXX010101000" nombre="PUBLICO EN GENERAL">
+    <cfdi:Domicilio calle="CERRADA DE AZUCENAS" noExterior="109" colonia="REFORMA" municipio="Oaxaca de Juárez" estado="Oaxaca" pais="México" codigoPostal="68050"/>
   </cfdi:Receptor>
   <cfdi:Conceptos>
-    <cfdi:Concepto noIdentificacion="7899701" unidad="Pieza" descripcion="Caja de Chocolates" cantidad="1.00" valorUnitario="50.00" importe="50.00"/>    <cfdi:Concepto noIdentificacion="8789788" unidad="No aplica" descripcion="Envio" cantidad="1.00" valorUnitario="50.00" importe="50.00"/>
+    <cfdi:Concepto cantidad="3" unidad="PIEZA" descripcion="CAJA DE HOJAS BLANCAS TAMAÑO CARTA" valorUnitario="450.00" importe="1350.00"/>
+    <cfdi:Concepto cantidad="8" unidad="PIEZA" descripcion="RECOPILADOR PASTA DURA 3 ARILLOS" valorUnitario="18.50" importe="148.00"/>
   </cfdi:Conceptos>
-  <cfdi:Impuestos totalImpuestosRetenidos="200.00" totalImpuestosTrasladados="16.00">
-    <cfdi:Retenciones>
-      <cfdi:Retencion impuesto="ISR" importe="200.00"/>
-    </cfdi:Retenciones>
+  <cfdi:Impuestos totalImpuestosTrasladados="239.68">
     <cfdi:Traslados>
-      <cfdi:Traslado impuesto="IVA" tasa="16.00" importe="16.00"/>
+      <cfdi:Traslado impuesto="IVA" tasa="16" importe="239.68"/>
     </cfdi:Traslados>
-  </cfdi:Impuestos>
+  </cfdi:Impuestos> 
+ 
 </cfdi:Comprobante>
 EOF
 )
@@ -132,5 +123,13 @@ fi
 ## Decodificar XML
 xmlb64=`grep "<xml xsi:type=\"xsd:string\">.*<.xml>" $FILE_RESPONSE | sed -e "s/^.*<xml/<xml/" | cut -f2 -d">"| cut -f1 -d"<"`
 echo `echo $xmlb64 | base64 --decode > $cfdixml`
+
 echo "Timbrado generado con exito"
-echo "El comprobante lo encuentra en el archivo $cfdixml"
+echo "El comprobante lo encuentra en $cfdixml"
+
+if [ "$GENERARPDF" == "true" ]
+    then
+    pdfb64=`grep "<pdf xsi:type=\"xsd:string\">.*<.pdf>" $FILE_RESPONSE | sed -e "s/^.*<pdf/<pdf/" | cut -f2 -d">"| cut -f1 -d"<"`
+    echo `echo $pdfb64 | base64 --decode > $cfdipdf`
+    echo "El PDF lo encuentra en $cfdipdf"
+fi
