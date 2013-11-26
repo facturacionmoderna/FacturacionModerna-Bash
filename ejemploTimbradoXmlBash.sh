@@ -6,6 +6,7 @@
 ##############################
 
 ### Declaracion de Variables
+DATE=`date +'%Y-%m-%dT%H:%M:00'`
 USERID="UsuarioPruebasWS"
 USERPASS="b9ec2afa3361a59af4b4d102d3f704eabdf097d4"
 RFC="ESI920427886"
@@ -30,7 +31,7 @@ code=""
 ## Crear Layout
 FILE=$(cat<<EOF
 <?xml version="1.0" encoding="utf-8"?>
-<cfdi:Comprobante xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd" xmlns:cfdi="http://www.sat.gob.mx/cfd/3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="3.2" serie="AA" folio="4" fecha="2013-07-12T10:12:58" sello="" formaDePago="Pago en una sola exhibición" noCertificado="" certificado="" condicionesDePago="Contado" subTotal="1498.00" descuento="0.00" Moneda="MXN" total="1737.68" tipoDeComprobante="ingreso" metodoDePago="Cheque" LugarExpedicion="San Pedro Garza García, Nuevo León, México" NumCtaPago="No identificado">
+<cfdi:Comprobante xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd" xmlns:cfdi="http://www.sat.gob.mx/cfd/3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="3.2" serie="AA" folio="4" fecha="$DATE" sello="" formaDePago="Pago en una sola exhibición" noCertificado="" certificado="" condicionesDePago="Contado" subTotal="1498.00" descuento="0.00" Moneda="MXN" total="1737.68" tipoDeComprobante="ingreso" metodoDePago="Cheque" LugarExpedicion="San Pedro Garza García, Nuevo León, México" NumCtaPago="No identificado">
   <cfdi:Emisor rfc="ESI920427886" nombre="FACTURACION MODERNA SA DE CV">
     <cfdi:DomicilioFiscal calle="RIO GUADALQUIVIR" noExterior="238" colonia="ORIENTE DEL VALLE" municipio="San Pedro Garza García" estado="Nuevo León" pais="México" codigoPostal="66220"/>
     <cfdi:RegimenFiscal Regimen="REGIMEN GENERAL DE LEY PERSONAS MORALES"/>
@@ -54,11 +55,8 @@ EOF
 
 echo $FILE > $FILE_XML
 
-## Generar la cadena Original
-cadena=`xsltproc $XSLTFILE $FILE_XML > $TMP`
-
 ## Obtener sello del comprobante
-sello=`openssl dgst -sha1 -sign $PEMFILE $TMP | openssl enc -base64 -A > $TMP`
+sello=`xsltproc $XSLTFILE $FILE_XML | openssl dgst -sha1 -sign $PEMFILE | openssl enc -base64 -A > $TMP`
 sello=`sed -e "s/\\//\\\\\\\\\//g" $TMP`
 
 ## Obtener contenido del certificado en base 64

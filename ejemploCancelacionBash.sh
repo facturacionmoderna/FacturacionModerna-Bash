@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 ####Ejemplo para cancelar un CFDI
 
