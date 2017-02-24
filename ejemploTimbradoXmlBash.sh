@@ -9,7 +9,7 @@
 DATE=`date +'%Y-%m-%dT%H:%M:00'`
 USERID="UsuarioPruebasWS"
 USERPASS="b9ec2afa3361a59af4b4d102d3f704eabdf097d4"
-RFC="ESI920427886"
+RFC="TCM970625MB1"
 URLTIMBRADO="https://t1demo.facturacionmoderna.com/timbrado/soap"
 FILE_SOAPREQUEST="soap_request.xml"
 GENERARTXT="false"
@@ -17,9 +17,9 @@ GENERARPDF="true"
 GENERARCBB="false"
 FILE_XML="XmlUTF8.xml"
 XSLTFILE="utilerias/xslt32/cadenaoriginal_3_2.xslt"
-KEYFILE="utilerias/certificados/20001000000200000192.key"
-CERTFILE="utilerias/certificados/20001000000200000192.cer"
-PEMFILE="utilerias/certificados/20001000000200000192.key.pem"
+KEYFILE="utilerias/certificados/20001000000300022762.key"
+CERTFILE="utilerias/certificados/20001000000300022762.cer"
+PEMFILE="utilerias/certificados/20001000000300022762.key.pem"
 PASS="12345678a"
 TMP="tmp.txt"
 cfdixml="cfdi.xml"
@@ -32,7 +32,7 @@ code=""
 FILE=$(cat<<EOF
 <?xml version="1.0" encoding="utf-8"?>
 <cfdi:Comprobante xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd" xmlns:cfdi="http://www.sat.gob.mx/cfd/3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="3.2" serie="AA" folio="4" fecha="$DATE" sello="" formaDePago="Pago en una sola exhibición" noCertificado="" certificado="" condicionesDePago="Contado" subTotal="1498.00" descuento="0.00" Moneda="MXN" total="1737.68" tipoDeComprobante="ingreso" metodoDePago="Cheque" LugarExpedicion="San Pedro Garza García, Nuevo León, México" NumCtaPago="No identificado">
-  <cfdi:Emisor rfc="ESI920427886" nombre="FACTURACION MODERNA SA DE CV">
+  <cfdi:Emisor rfc="TCM970625MB1" nombre="FACTURACION MODERNA SA DE CV">
     <cfdi:DomicilioFiscal calle="RIO GUADALQUIVIR" noExterior="238" colonia="ORIENTE DEL VALLE" municipio="San Pedro Garza García" estado="Nuevo León" pais="México" codigoPostal="66220"/>
     <cfdi:RegimenFiscal Regimen="REGIMEN GENERAL DE LEY PERSONAS MORALES"/>
   </cfdi:Emisor>
